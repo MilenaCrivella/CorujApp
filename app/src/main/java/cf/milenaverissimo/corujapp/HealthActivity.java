@@ -2,21 +2,27 @@ package cf.milenaverissimo.corujapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.List;
 
 public class HealthActivity extends AppCompatActivity
-       implements NavigationView.OnNavigationItemSelectedListener
+        implements NavigationView.OnNavigationItemSelectedListener
 {
+    String[] items;
+    int number;
+    String[] Tips;
+    public QuoteBank mQuoteBank;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,16 +30,7 @@ public class HealthActivity extends AppCompatActivity
         setContentView(R.layout.activity_health);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
+        
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -42,8 +39,49 @@ public class HealthActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        SendTitle();
+        MyListView();
+    }
+    private void SendTitle(){
+        final String mPath = "health.txt";
+        mQuoteBank = new QuoteBank(this);
+        List<String> mLines;
+        String health;
+        String c = "";
+
+        mQuoteBank = new QuoteBank(this);
+        mLines = mQuoteBank.readLine(mPath);
+        for (String string : mLines) {
+            c += string;
+        }
+        health = c;
+        items = health.split("@");
+        number = items.length;
     }
 
+    private void MyListView(){
+        SendTitle();
+        Tips = new String[number];
+        for(int i = 0; i < number; i++){
+            Tips[i] = items[i].split("#")[0];
+        }
+
+        ListView List = (ListView) findViewById(R.id.List);
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, R.layout.listview_style, R.id.textView2, Tips);
+        List.setAdapter(myAdapter);
+
+        List.getLayoutParams().height = 100 * number;
+        List.requestLayout();
+        List.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent SendText = new Intent(HealthActivity.this, TextHealthActivity.class);
+                SendText.putExtra("number", position);
+                startActivity(SendText);
+            }
+        });
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -55,31 +93,14 @@ public class HealthActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.health, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
@@ -94,10 +115,10 @@ public class HealthActivity extends AppCompatActivity
         } else if (id == R.id.nav_fun) {
             startActivity(new Intent(HealthActivity.this, FunActivity.class));
 
+        } else if (id == R.id.nav_vaccine) {
+            startActivity(new Intent(HealthActivity.this, VaccineActivity.class));
 
-        } else if (id == R.id.nav_settings) {
         }
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

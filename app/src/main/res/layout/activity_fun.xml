@@ -8,9 +8,17 @@
     <include layout="@layout/app_bar_menu" android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <android.support.design.widget.NavigationView android:id="@+id/nav_view"
-        android:layout_width="wrap_content" android:layout_height="match_parent"
-        android:layout_gravity="start" android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_menu" app:menu="@menu/activity_menu_drawer" />
+    <include layout="@layout/content_fun" />
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_menu"
+        app:menu="@menu/activity_menu_drawer"
+        app:itemTextColor="#fff"
+        android:background="#8E83B8"/>
 
 </android.support.v4.widget.DrawerLayout>
